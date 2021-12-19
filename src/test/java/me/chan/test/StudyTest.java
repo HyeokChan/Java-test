@@ -5,7 +5,18 @@ import org.junit.jupiter.api.condition.EnabledOnJre;
 import org.junit.jupiter.api.condition.EnabledOnOs;
 import org.junit.jupiter.api.condition.JRE;
 import org.junit.jupiter.api.condition.OS;
+import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.aggregator.AggregateWith;
+import org.junit.jupiter.params.aggregator.ArgumentsAccessor;
+import org.junit.jupiter.params.aggregator.ArgumentsAggregationException;
+import org.junit.jupiter.params.aggregator.ArgumentsAggregator;
+import org.junit.jupiter.params.converter.ArgumentConversionException;
+import org.junit.jupiter.params.converter.ConvertWith;
+import org.junit.jupiter.params.converter.SimpleArgumentConverter;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.EmptySource;
+import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.time.Duration;
@@ -86,12 +97,38 @@ class StudyTest {
     @ParameterizedTest(name = "{index} {displayName} message={0}")
     @DisplayName("파라미터 테스트")
     @ValueSource(strings = {"날씨가", "많이", "추워지고", "있네요."})
+    @EmptySource
+    @NullSource
     @Tag("fast")
     void parameterTest(String message) {
         System.out.println("message = " + message);
     }
 
+    @ParameterizedTest(name = "{index} {displayName} message={0}")
+    @DisplayName("파라미터 CSV 테스트")
+    @CsvSource({"10, '자바 스터디'", "20, 스프링"})
+    @Tag("fast")
+    void parameterCsvTest(@AggregateWith(StudyAggregator.class) Study study) {
+        System.out.println("study = " + study);
+    }
 
+    // aggregator 를 통해 여러 인자 전환
+    static class StudyAggregator implements ArgumentsAggregator {
+        @Override
+        public Object aggregateArguments(ArgumentsAccessor argumentsAccessor, ParameterContext parameterContext) throws ArgumentsAggregationException {
+            Study study = new Study(argumentsAccessor.getInteger(0), argumentsAccessor.getString(1));
+            return study;
+        }
+    }
+
+    // 하나의 argument 만 전환 가능하다.
+    static class StudyConverter extends SimpleArgumentConverter {
+        @Override
+        protected Object convert(Object source, Class<?> targetType) throws ArgumentConversionException {
+            assertEquals(Study.class, targetType, "Can only convert to Study");
+            return new Study(Integer.parseInt(source.toString()));
+        }
+    }
 
     @Test
     @Disabled
