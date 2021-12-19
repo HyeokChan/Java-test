@@ -26,8 +26,11 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.junit.jupiter.api.Assumptions.assumingThat;
 
+// @TestInstance(TestInstance.Lifecycle.PER_CLASS)  // 통합 테스트에 사용
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)   // 통합 테스트에 사용
 class StudyTest {
+    @Order(2)
     @FastTest
     @DisplayName("스터디 만들기")
     void create_new_study() {
@@ -71,11 +74,13 @@ class StudyTest {
         });
     }
 
+    @Order(1)
     @FastTest
     @DisplayName("스터디 만들기 fast")
     void tagFast() {
         System.out.println("fast test");
     }
+
 
     @SlowTest
     @DisplayName("스터디 만들기 slow")
