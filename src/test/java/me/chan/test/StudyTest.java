@@ -5,6 +5,8 @@ import org.junit.jupiter.api.condition.EnabledOnJre;
 import org.junit.jupiter.api.condition.EnabledOnOs;
 import org.junit.jupiter.api.condition.JRE;
 import org.junit.jupiter.api.condition.OS;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.time.Duration;
 import java.util.function.Supplier;
@@ -71,6 +73,23 @@ class StudyTest {
         System.out.println("fast slow");
     }
 
+    
+    @RepeatedTest(value = 10, name = "{displayName}, {currentRepetition}/{totalRepetitions}")
+    @DisplayName("테스트 반복하기1")
+    @Tag("fast")
+    void repeatTest1(RepetitionInfo repetitionInfo) {
+        System.out.println("repeat test1 " + repetitionInfo.getCurrentRepetition() + "/" +
+                repetitionInfo.getTotalRepetitions());
+    }
+
+    
+    @ParameterizedTest(name = "{index} {displayName} message={0}")
+    @DisplayName("파라미터 테스트")
+    @ValueSource(strings = {"날씨가", "많이", "추워지고", "있네요."})
+    @Tag("fast")
+    void parameterTest(String message) {
+        System.out.println("message = " + message);
+    }
 
 
 
