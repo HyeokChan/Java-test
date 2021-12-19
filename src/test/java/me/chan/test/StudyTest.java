@@ -1,11 +1,17 @@
 package me.chan.test;
 
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.condition.EnabledOnJre;
+import org.junit.jupiter.api.condition.EnabledOnOs;
+import org.junit.jupiter.api.condition.JRE;
+import org.junit.jupiter.api.condition.OS;
 
 import java.time.Duration;
 import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
+import static org.junit.jupiter.api.Assumptions.assumingThat;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class StudyTest {
@@ -28,10 +34,38 @@ class StudyTest {
     }
 
     @Test
+    @DisplayName("조건에 따라 테스트 실행하기")
+    void condition() {
+        assumeTrue(1>2);
+        Study study = new Study(1);
+        assertAll(
+                () -> assertNotNull(study),
+                () -> assertEquals(StudyStatus.DRAFT, study.getStatus(), () -> "스터디를 처음 만들면 상태값이 DRAFT 여야 한다."),
+                () -> assertTrue(study.getLimit() > 0, () -> "스터디 최대 참석 인원은 0명 이상이여야 한다.")
+        );
+    }
+
+    @Test
+    @DisplayName("조건에 따라 테스트 실행하기2")
+    @EnabledOnOs(OS.WINDOWS)
+    @EnabledOnJre(JRE.JAVA_11)
+    void condition2() {
+        assumingThat(true, () -> {
+            System.out.println("condition2");
+        });
+        assumingThat(false, () -> {
+            System.out.println("condition2 false");
+        });
+    }
+
+
+    @Test
     @Disabled
     void create_new_study_again() {
         System.out.println("create1");
     }
+
+
 
     @BeforeAll
     static void beforeAll() {
