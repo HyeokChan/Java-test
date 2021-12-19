@@ -58,6 +58,23 @@ class StudyTest {
         });
     }
 
+    @Test
+    @DisplayName("스터디 만들기 fast")
+    @Tag("fast")
+    void tagFast() {
+        System.out.println("fast test");
+    }
+
+    @Test
+    @DisplayName("스터디 만들기 slow")
+    @Tag("slow")
+    void tagSlow() {
+        // edit configure -> tags 수정
+        System.out.println("fast slow");
+    }
+
+
+
 
     @Test
     @Disabled
