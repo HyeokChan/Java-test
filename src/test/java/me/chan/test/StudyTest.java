@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assumptions.assumingThat;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class StudyTest {
-    @Test
+    @FastTest
     @DisplayName("스터디 만들기")
     void create_new_study() {
         assertTimeout(Duration.ofMillis(1000), () -> {
@@ -33,7 +33,7 @@ class StudyTest {
         System.out.println("create");
     }
 
-    @Test
+    @FastTest
     @DisplayName("조건에 따라 테스트 실행하기")
     void condition() {
         assumeTrue(1>2);
@@ -45,7 +45,7 @@ class StudyTest {
         );
     }
 
-    @Test
+    @FastTest
     @DisplayName("조건에 따라 테스트 실행하기2")
     @EnabledOnOs(OS.WINDOWS)
     @EnabledOnJre(JRE.JAVA_11)
@@ -58,16 +58,14 @@ class StudyTest {
         });
     }
 
-    @Test
+    @FastTest
     @DisplayName("스터디 만들기 fast")
-    @Tag("fast")
     void tagFast() {
         System.out.println("fast test");
     }
 
-    @Test
+    @SlowTest
     @DisplayName("스터디 만들기 slow")
-    @Tag("slow")
     void tagSlow() {
         // edit configure -> tags 수정
         System.out.println("fast slow");
