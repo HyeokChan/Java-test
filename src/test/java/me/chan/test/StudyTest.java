@@ -5,7 +5,9 @@ import org.junit.jupiter.api.condition.EnabledOnJre;
 import org.junit.jupiter.api.condition.EnabledOnOs;
 import org.junit.jupiter.api.condition.JRE;
 import org.junit.jupiter.api.condition.OS;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.ParameterContext;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.aggregator.AggregateWith;
 import org.junit.jupiter.params.aggregator.ArgumentsAccessor;
@@ -26,10 +28,16 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.junit.jupiter.api.Assumptions.assumingThat;
 
+// @ExtendWith(FindSlowTestExtension.class) // 확장 모델 선언적 방법
 // @TestInstance(TestInstance.Lifecycle.PER_CLASS)  // 통합 테스트에 사용
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)   // 통합 테스트에 사용
 class StudyTest {
+
+    // 확장 모델 프로그래밍 등록
+    @RegisterExtension
+    static FindSlowTestExtension findSlowTestExtension = new FindSlowTestExtension(1000L);
+
     @Order(2)
     @FastTest
     @DisplayName("스터디 만들기")
@@ -52,7 +60,7 @@ class StudyTest {
     @FastTest
     @DisplayName("조건에 따라 테스트 실행하기")
     void condition() {
-        assumeTrue(1>2);
+        assumeTrue(2>1);
         Study study = new Study(1);
         assertAll(
                 () -> assertNotNull(study),
